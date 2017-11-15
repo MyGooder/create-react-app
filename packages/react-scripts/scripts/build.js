@@ -28,11 +28,11 @@ const fs = require('fs-extra');
 const webpack = require('webpack');
 const config = require('../config/webpack.config.prod');
 const paths = require('../config/paths');
-const checkRequiredFiles = require('react-dev-utils/checkRequiredFiles');
-const formatWebpackMessages = require('react-dev-utils/formatWebpackMessages');
-const printHostingInstructions = require('react-dev-utils/printHostingInstructions');
-const FileSizeReporter = require('react-dev-utils/FileSizeReporter');
-const printBuildError = require('react-dev-utils/printBuildError');
+const checkRequiredFiles = require('@mygooder/react-dev-utils/checkRequiredFiles');
+const formatWebpackMessages = require('@mygooder/react-dev-utils/formatWebpackMessages');
+const printHostingInstructions = require('@mygooder/react-dev-utils/printHostingInstructions');
+const FileSizeReporter = require('@mygooder/react-dev-utils/FileSizeReporter');
+const printBuildError = require('@mygooder/react-dev-utils/printBuildError');
 
 const measureFileSizesBeforeBuild =
   FileSizeReporter.measureFileSizesBeforeBuild;
