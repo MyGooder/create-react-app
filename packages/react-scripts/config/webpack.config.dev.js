@@ -215,10 +215,18 @@ module.exports = {
           },
           {
             test: /\.svg$/,
+            include: `${paths.appSrc}/svg`,
+            exclude: paths.appNodeModules,
             use: [
-              { loader: 'svg-sprite-loader', options: {} },
+              { loader: 'svg-sprite-loader', options: {extract: false} },
               'svg-fill-loader',
-              'svgo-loader'
+              { loader: 'svgo-loader', options: {
+                plugins: [
+                  {removeTitle: true},
+                  {convertColors: {shorthex: false}},
+                  {convertPathData: false}
+                ]
+              }}
             ]
           },
           // "file" loader makes sure those assets get served by WebpackDevServer.
@@ -231,7 +239,7 @@ module.exports = {
             // it's runtime that would otherwise processed through "file" loader.
             // Also exclude `html` and `json` extensions so they get processed
             // by webpacks internal loaders.
-            exclude: [/\.js$/, /\.html$/, /\.json$/, /\.svg$/],
+            exclude: [/\.js$/, /\.html$/, /\.json$/, `${paths.appSrc}/svg`],
             loader: require.resolve('file-loader'),
             options: {
               name: 'static/media/[name].[hash:8].[ext]',
@@ -276,6 +284,7 @@ module.exports = {
     // https://github.com/jmblog/how-to-optimize-momentjs-with-webpack
     // You can remove this if you don't use Moment.js:
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+
   ],
   // Some libraries import Node modules but don't use them in the browser.
   // Tell Webpack to provide empty mocks for them so importing them works.
