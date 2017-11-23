@@ -30,6 +30,17 @@ const publicUrl = '';
 // Get environment variables to inject into our app.
 const env = getClientEnvironment(publicUrl);
 
+const babelOptions = {
+  // @remove-on-eject-begin
+  babelrc: false,
+  presets: [require.resolve('babel-preset-react-app')],
+  // @remove-on-eject-end
+  // This is a feature of `babel-loader` for webpack (not Babel itself).
+  // It enables caching results in ./node_modules/.cache/babel-loader/
+  // directory for faster rebuilds.
+  cacheDirectory: true,
+}
+
 // This is the development configuration.
 // It is focused on developer experience and fast rebuilds.
 // The production configuration is different and lives in a separate file.
@@ -160,21 +171,39 @@ module.exports = {
               name: 'static/media/[name].[hash:8].[ext]',
             },
           },
+
           // Process JS with Babel.
           {
             test: /\.(js|jsx|mjs)$/,
             include: paths.appSrc,
             loader: require.resolve('babel-loader'),
-            options: {
-              // @remove-on-eject-begin
-              babelrc: false,
-              presets: [require.resolve('babel-preset-react-app')],
-              // @remove-on-eject-end
-              // This is a feature of `babel-loader` for webpack (not Babel itself).
-              // It enables caching results in ./node_modules/.cache/babel-loader/
-              // directory for faster rebuilds.
-              cacheDirectory: true,
-            },
+            options: babelOptions,
+          },
+          // "svg-sprite" loader loads SVGs in a single sprite, injected in HTML.
+          // We add "svg-fill" loader to use dynamic fill requests.
+          // We use a custom runtimeGenerator to return an Icon component
+          // instead of returning only symbol properties.
+          {
+            test: /\.svg$/,
+            include: `${paths.appSrc}/svg`,
+            exclude: paths.appNodeModules,
+            use: [
+              {
+                loader: require.resolve('babel-loader'),
+                options: babelOptions
+              },
+              {
+                loader: 'svg-sprite-loader',
+                options: {
+                  extract: false,
+                  runtimeGenerator: require.resolve('./svg-sprite-loader/svg-to-icon-component-runtime-generator'),
+                  runtimeOptions: {
+                    iconModule: `${paths.appSrc}/components/icon/SvgIcon.js` // Relative to current build context folder
+                  }
+                }
+              },
+              'svg-fill-loader',
+            ]
           },
           // "postcss" loader applies autoprefixer to our CSS.
           // "css" loader resolves paths in CSS and adds assets as dependencies.
@@ -213,22 +242,7 @@ module.exports = {
               },
             ],
           },
-          {
-            test: /\.svg$/,
-            include: `${paths.appSrc}/svg`,
-            exclude: paths.appNodeModules,
-            use: [
-              { loader: 'svg-sprite-loader', options: {extract: false} },
-              'svg-fill-loader',
-              { loader: 'svgo-loader', options: {
-                plugins: [
-                  {removeTitle: true},
-                  {convertColors: {shorthex: false}},
-                  {convertPathData: false}
-                ]
-              }}
-            ]
-          },
+
           // "file" loader makes sure those assets get served by WebpackDevServer.
           // When you `import` an asset, you get its (virtual) filename.
           // In production, they would get copied to the `build` folder.

@@ -6,46 +6,46 @@
  * LICENSE file in the root directory of this source tree.
  */
 // @remove-on-eject-end
-'use strict';
+'use strict'
 
-const autoprefixer = require('autoprefixer');
-const path = require('path');
-const webpack = require('webpack');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const ManifestPlugin = require('webpack-manifest-plugin');
-const InterpolateHtmlPlugin = require('@mygooder/react-dev-utils/InterpolateHtmlPlugin');
-const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
-const eslintFormatter = require('@mygooder/react-dev-utils/eslintFormatter');
-const ModuleScopePlugin = require('@mygooder/react-dev-utils/ModuleScopePlugin');
-const paths = require('./paths');
-const getClientEnvironment = require('./env');
-const CompressionPlugin = require('compression-webpack-plugin');
-const BrotliPlugin = require('brotli-webpack-plugin');
+const autoprefixer = require('autoprefixer')
+const path = require('path')
+const webpack = require('webpack')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const ManifestPlugin = require('webpack-manifest-plugin')
+const InterpolateHtmlPlugin = require('@mygooder/react-dev-utils/InterpolateHtmlPlugin')
+const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin')
+const eslintFormatter = require('@mygooder/react-dev-utils/eslintFormatter')
+const ModuleScopePlugin = require('@mygooder/react-dev-utils/ModuleScopePlugin')
+const paths = require('./paths')
+const getClientEnvironment = require('./env')
+const CompressionPlugin = require('compression-webpack-plugin')
+const BrotliPlugin = require('brotli-webpack-plugin')
 
 // Webpack uses `publicPath` to determine where the app is being served from.
 // It requires a trailing slash, or the file assets will get an incorrect path.
-const publicPath = paths.servedPath;
+const publicPath = paths.servedPath
 // Some apps do not use client-side routing with pushState.
 // For these, "homepage" can be set to "." to enable relative asset paths.
-const shouldUseRelativeAssetPaths = publicPath === './';
+const shouldUseRelativeAssetPaths = publicPath === './'
 // Source maps are resource heavy and can cause out of memory issue for large source files.
-const shouldUseSourceMap = process.env.GENERATE_SOURCEMAP !== 'false';
+const shouldUseSourceMap = process.env.GENERATE_SOURCEMAP !== 'false'
 // `publicUrl` is just like `publicPath`, but we will provide it to our app
 // as %PUBLIC_URL% in `index.html` and `process.env.PUBLIC_URL` in JavaScript.
 // Omit trailing slash as %PUBLIC_URL%/xyz looks better than %PUBLIC_URL%xyz.
-const publicUrl = publicPath.slice(0, -1);
+const publicUrl = publicPath.slice(0, -1)
 // Get environment variables to inject into our app.
-const env = getClientEnvironment(publicUrl);
+const env = getClientEnvironment(publicUrl)
 
 // Assert this just to be safe.
 // Development builds of React are slow and not intended for production.
 if (env.stringified['process.env'].NODE_ENV !== '"production"') {
-  throw new Error('Production builds must have NODE_ENV=production.');
+  throw new Error('Production builds must have NODE_ENV=production.')
 }
 
 // Note: defined here because it will be used more than once.
-const cssFilename = 'static/css/[name].[contenthash:8].css';
+const cssFilename = 'static/css/[name].[contenthash:8].css'
 
 // ExtractTextPlugin expects the build output to be flat.
 // (See https://github.com/webpack-contrib/extract-text-webpack-plugin/issues/27)
@@ -53,8 +53,16 @@ const cssFilename = 'static/css/[name].[contenthash:8].css';
 // To have this structure working with relative paths, we have to use custom options.
 const extractTextPluginOptions = shouldUseRelativeAssetPaths
   ? // Making sure that the publicPath goes back to to build folder.
-    { publicPath: Array(cssFilename.split('/').length).join('../') }
-  : {};
+  { publicPath: Array(cssFilename.split('/').length).join('../') }
+  : {}
+
+const babelOptions = {
+  // @remove-on-eject-begin
+  babelrc: false,
+  presets: [require.resolve('babel-preset-react-app')],
+  // @remove-on-eject-end
+  compact: true,
+}
 
 // This is the production configuration.
 // It compiles slowly and is focused on producing a fast and minimal bundle.
@@ -174,13 +182,7 @@ module.exports = {
             test: /\.(js|jsx|mjs)$/,
             include: paths.appSrc,
             loader: require.resolve('babel-loader'),
-            options: {
-              // @remove-on-eject-begin
-              babelrc: false,
-              presets: [require.resolve('babel-preset-react-app')],
-              // @remove-on-eject-end
-              compact: true,
-            },
+            options: babelOptions,
           },
           // The notation here is somewhat confusing.
           // "postcss" loader applies autoprefixer to our CSS.
@@ -246,15 +248,31 @@ module.exports = {
             include: `${paths.appSrc}/svg`,
             exclude: paths.appNodeModules,
             use: [
-              { loader: 'svg-sprite-loader', options: {extract: false} },
+              {
+                loader: require.resolve('babel-loader'),
+                options: babelOptions
+              },
+              {
+                loader: require.resolve('svg-sprite-loader'),
+                options: {
+                  extract: false,
+                  runtimeGenerator: require.resolve('./svg-sprite-loader/svg-to-icon-component-runtime-generator'),
+                  runtimeOptions: {
+                    iconModule: `${paths.appSrc}/components/icon/SvgIcon.js` // Relative to current build context folder
+                  }
+                }
+              },
               'svg-fill-loader',
-              { loader: 'svgo-loader', options: {
-                plugins: [
-                  {removeTitle: true},
-                  {convertColors: {shorthex: false}},
-                  {convertPathData: false}
-                ]
-              }}
+              {
+                loader: require.resolve('svgo-loader'),
+                options: {
+                  plugins: [
+                    { removeTitle: true },
+                    { convertColors: { shorthex: false } },
+                    { convertPathData: false }
+                  ]
+                }
+              }
             ]
           },
           // "file" loader makes sure assets end up in the `build` folder.
@@ -350,14 +368,14 @@ module.exports = {
       logger(message) {
         if (message.indexOf('Total precache size is') === 0) {
           // This message occurs for every build and is a bit too noisy.
-          return;
+          return
         }
         if (message.indexOf('Skipping static resource') === 0) {
           // This message obscures real errors so we ignore it.
           // https://github.com/facebookincubator/create-react-app/issues/2612
-          return;
+          return
         }
-        console.log(message);
+        console.log(message)
       },
       minify: true,
       // For unknown URLs, fallback to the index page
@@ -379,8 +397,8 @@ module.exports = {
     // This allows configuring Nginx to use gzip_static and brotli_static 
     // directives instead of on-the-fly compression (thus much faster)
     new CompressionPlugin({
-      asset: "[path].gz[query]",
-      algorithm: "gzip",
+      asset: '[path].gz[query]',
+      algorithm: 'gzip',
       test: /\.(js|css|html|svg)$/,
       threshold: 10240,
       minRatio: 0.8
@@ -401,4 +419,4 @@ module.exports = {
     tls: 'empty',
     child_process: 'empty',
   },
-};
+}
