@@ -1,6 +1,6 @@
 {
   "name": "@mygooder/react-scripts",
-  "version": "1.0.17-0.0.2",
+  "version": "1.0.17-0.0.3",
   "description": "Configuration and scripts for Create React App.",
   "repository": "mygooder/create-react-app",
   "license": "MIT",
@@ -53,6 +53,9 @@
     "promise": "8.0.1",
     "raf": "3.4.0",
     "style-loader": "0.19.0",
+    "svg-fill-loader": "^0.0.8",
+    "svg-sprite-loader": "^3.4.1",
+    "svgo-loader": "^2.1.0",
     "sw-precache-webpack-plugin": "0.11.4",
     "url-loader": "0.6.2",
     "webpack": "3.8.1",
@@ -62,10 +65,7 @@
   },
   "devDependencies": {
     "react": "^16.0.0",
-    "react-dom": "^16.0.0",
-    "svg-fill-loader": "^0.0.8",
-    "svg-sprite-loader": "^3.4.1",
-    "svgo-loader": "^2.1.0"
+    "react-dom": "^16.0.0"
   },
   "optionalDependencies": {
     "fsevents": "1.1.2"
