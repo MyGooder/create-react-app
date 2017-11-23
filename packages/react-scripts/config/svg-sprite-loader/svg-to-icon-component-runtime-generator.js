@@ -25,8 +25,8 @@ module.exports = function runtimeGenerator({ symbol, config, context, loaderCont
     
     const symbol = new SpriteSymbol(${stringifySymbol(symbol)});
     sprite.add(symbol);
-
-    export default class ${displayName} extends React.Component {
+    
+    export default class ${displayName} extends React.PureComponent {
       render() {
         return <${parentComponentDisplayName} glyph="${symbol.id}" {...this.props} />;
       }

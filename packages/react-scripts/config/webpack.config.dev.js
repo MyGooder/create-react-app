@@ -198,7 +198,7 @@ module.exports = {
                   extract: false,
                   runtimeGenerator: require.resolve('./svg-sprite-loader/svg-to-icon-component-runtime-generator'),
                   runtimeOptions: {
-                    iconModule: `${paths.appSrc}/components/icon/SvgIcon.js` // Relative to current build context folder
+                   iconModule: 'src/components/icon/SvgIcon.js' // Relative to current build context folder
                   }
                 }
               },
@@ -253,7 +253,7 @@ module.exports = {
             // it's runtime that would otherwise processed through "file" loader.
             // Also exclude `html` and `json` extensions so they get processed
             // by webpacks internal loaders.
-            exclude: [/\.js$/, /\.html$/, /\.json$/, `${paths.appSrc}/svg`],
+            exclude: [/\.js$/, /\.html$/, /\.json$/, `${paths.appSrc}/svg/`],
             loader: require.resolve('file-loader'),
             options: {
               name: 'static/media/[name].[hash:8].[ext]',
