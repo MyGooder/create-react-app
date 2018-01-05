@@ -890,10 +890,10 @@ life of the shell session.
 #### Windows (cmd.exe)
 
 ```cmd
-set REACT_APP_SECRET_CODE=abcdef&&npm start
+set "REACT_APP_SECRET_CODE=abcdef" && npm start
 ```
 
-(Note: the lack of whitespace is intentional.)
+(Note: Quotes around the variable assignment are required to avoid a trailing whitespace.)
 
 #### Linux, macOS (Bash)
 
@@ -1258,7 +1258,7 @@ it('renders without crashing', () => {
 });
 ```
 
-This test mounts a component and makes sure that it didn’t throw during rendering. Tests like this provide a lot value with very little effort so they are great as a starting point, and this is the test you will find in `src/App.test.js`.
+This test mounts a component and makes sure that it didn’t throw during rendering. Tests like this provide a lot of value with very little effort so they are great as a starting point, and this is the test you will find in `src/App.test.js`.
 
 When you encounter bugs caused by changing components, you will gain a deeper insight into which parts of them are worth testing in your application. This might be a good time to introduce more specific tests asserting specific expected output or behavior.
 
@@ -1572,12 +1572,9 @@ Use the following [`launch.json`](https://code.visualstudio.com/docs/editor/debu
       "name": "Debug CRA Tests",
       "type": "node",
       "request": "launch",
-      "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/react-scripts",
-      "runtimeArgs": [
-        "--inspect-brk",
-        "test"
-      ],
+      "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/react-scripts",      
       "args": [
+        "test",
         "--runInBand",
         "--no-cache",
         "--env=jsdom"
@@ -2134,7 +2131,7 @@ In this case, ensure that the file is there with the proper lettercase and that�
 **To do a manual deploy to Netlify’s CDN:**
 
 ```sh
-npm install netlify-cli
+npm install netlify-cli -g
 netlify deploy
 ```
 
