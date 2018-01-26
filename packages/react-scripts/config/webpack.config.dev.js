@@ -39,6 +39,9 @@ const babelOptions = {
   // It enables caching results in ./node_modules/.cache/babel-loader/
   // directory for faster rebuilds.
   cacheDirectory: true,
+  plugins: [
+    'react-hot-loader/babel',
+  ]
 }
 
 // This is the development configuration.
@@ -52,6 +55,8 @@ module.exports = {
   // This means they will be the "root" imports that are included in JS bundle.
   // The first two entry points enable "hot" CSS and auto-refreshes for JS.
   entry: [
+    require.resolve('react-hot-loader/patch'),
+
     // We ship a few polyfills by default:
     require.resolve('./polyfills'),
     // Include an alternative client for WebpackDevServer. A client's job is to
@@ -198,7 +203,7 @@ module.exports = {
                   extract: false,
                   runtimeGenerator: require.resolve('./svg-sprite-loader/svg-to-icon-component-runtime-generator'),
                   runtimeOptions: {
-                   iconModule: 'src/components/icon/SvgIcon.js' // Relative to current build context folder
+                    iconModule: `${paths.appSrc}/components/icon/SvgIcon.js` // Relative to current build context folder
                   }
                 }
               },
@@ -253,7 +258,7 @@ module.exports = {
             // it's runtime that would otherwise processed through "file" loader.
             // Also exclude `html` and `json` extensions so they get processed
             // by webpacks internal loaders.
-            exclude: [/\.js$/, /\.html$/, /\.json$/, `${paths.appSrc}/svg/`],
+            exclude: [/\.js$/, /\.html$/, /\.json$/, `${paths.appSrc}/svg`],
             loader: require.resolve('file-loader'),
             options: {
               name: 'static/media/[name].[hash:8].[ext]',
