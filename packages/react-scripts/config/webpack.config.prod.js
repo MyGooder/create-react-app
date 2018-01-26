@@ -20,10 +20,12 @@ const eslintFormatter = require('@mygooder/react-dev-utils/eslintFormatter')
 const ModuleScopePlugin = require('@mygooder/react-dev-utils/ModuleScopePlugin')
 const paths = require('./paths')
 const getClientEnvironment = require('./env')
+
+/*------- Custom -------*/
 const CompressionPlugin = require('compression-webpack-plugin')
 const BrotliPlugin = require('brotli-webpack-plugin')
-const PurgecssPlugin = require('purgecss-webpack-plugin')
 const glob = require('glob-all')
+const PurgecssPlugin = require('purgecss-webpack-plugin')
 
 // Webpack uses `publicPath` to determine where the app is being served from.
 // It requires a trailing slash, or the file assets will get an incorrect path.
@@ -352,12 +354,13 @@ module.exports = {
     new ExtractTextPlugin({
       filename: cssFilename,
     }),
-    // Remove unused css with Purgecss. See https://github.com/FullHuman/purgecss
-    // for more information about purgecss.
-    // Specify the path of the html files and source files
-    new PurgecssPlugin({
-      paths: [paths.appHtml, ...glob.sync(`${paths.appSrc}/*`)]
-    }),
+    // // Remove unused css with Purgecss. See https://github.com/FullHuman/purgecss
+    // // for more information about purgecss.
+    // // Specify the path of the html files and source files
+    // new PurgecssPlugin({
+    //   // Specify the locations of any files you want to scan for class names.
+    //   paths: glob.sync(`${paths.appSrc}/**/*.js`)
+    // }),
     // Generate a manifest file which contains a mapping of all asset filenames
     // to their corresponding output file so that tools can pick it up without
     // having to parse `index.html`.
